@@ -22,7 +22,7 @@
 <section>
 <h2>Was sind Registry Tweaks?</h2>
 <p>
-Die Windows-Registry ist eine Art „Herz“ des Betriebssystems.  
+Die Windows-Registry ist das zentrale Herz des Betriebssystems.  
 Hier speichert Windows Einstellungen für Programme, Hardware und das System selbst.
 </p>
 <p>
@@ -30,28 +30,90 @@ Registry Tweaks ändern diese Einstellungen direkt, um Leistung, FPS oder Reakti
 </p>
 <p>
 ⚠️ Hinweis: Falsche Änderungen können Instabilität verursachen.  
-Immer vorher ein **Backup** erstellen oder die Registrierung exportieren.
+Immer vorher ein <strong>Backup</strong> erstellen oder die Registrierung exportieren.
 </p>
 </section>
 
 <section>
 <h2>1. Netzwerk-Optimierungen</h2>
 <ul>
-<li><strong>NetworkThrottlingIndex deaktivieren:</strong> verhindert künstliche Bandbreiten-Limits</li>
-<li><strong>TCP Ack Delay reduzieren:</strong> verkürzt Latenz beim Senden von Paketen</li>
-<li><strong>Nagle Algorithmus:</strong> kann in Shootern Input Lag reduzieren, durch Deaktivieren</li>
+<li>
+<strong>NetworkThrottlingIndex deaktivieren</strong><br>
+<em>Zweck:</em> Verhindert künstliche Bandbreiten-Limits.<br>
+<em>Schritte:</em>
+<ol>
+<li>Windows-Taste + R → regedit → OK</li>
+<li>Zum Pfad navigieren: <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile</code></li>
+<li>Den Wert <strong>NetworkThrottlingIndex</strong> finden und auf <strong>ffffffff</strong> setzen (HEX)</li>
+<li>PC neu starten</li>
+</ol>
+</li>
+
+<li>
+<strong>TCP Ack Delay reduzieren</strong><br>
+<em>Zweck:</em> Verkürzt Latenz beim Senden von Paketen.<br>
+<em>Schritte:</em>
+<ol>
+<li>Regedit öffnen</li>
+<li>Zum Pfad navigieren: <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\[Adapter]</code></li>
+<li>Neuen DWORD-Wert <strong>TcpAckFrequency</strong> erstellen → Wert = 1</li>
+<li>Neustart</li>
+</ol>
+</li>
+
+<li>
+<strong>Nagle Algorithmus deaktivieren</strong><br>
+<em>Zweck:</em> Reduziert Input Lag in Shootern.<br>
+<em>Schritte:</em>
+<ol>
+<li>Regedit öffnen</li>
+<li>Pfad: <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\[Adapter]</code></li>
+<li>DWord-Werte <strong>TcpNoDelay</strong auf 1 setzen</li>
+<li>Neustart</li>
+</ol>
+</li>
 </ul>
-<p>
-Ergebnis: stabilere Verbindung, weniger Mikroruckler in Online-Spielen.
-</p>
+<p>Ergebnis: stabilere Verbindung, weniger Mikroruckler in Online-Spielen.</p>
 </section>
 
 <section>
 <h2>2. Input & Responsiveness</h2>
 <ul>
-<li><strong>MMCSS Optimierungen:</strong> Priorität für Spiele-Threads erhöhen</li>
-<li><strong>SystemResponsiveness:</strong> sorgt dafür, dass Hintergrundprozesse weniger CPU blockieren</li>
-<li><strong>Mouse Acceleration entfernen:</strong> Präzisere Mausbewegungen in Shootern</li>
+<li>
+<strong>MMCSS Optimierungen</strong><br>
+<em>Zweck:</em> Priorität für Spiele-Threads erhöhen.<br>
+<em>Schritte:</em>
+<ol>
+<li>Regedit öffnen</li>
+<li>Pfad: <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile</code></li>
+<li>Den Wert <strong>TaskschedulerPriority</strong auf 6 setzen</li>
+<li>Neustart</li>
+</ol>
+</li>
+
+<li>
+<strong>SystemResponsiveness</strong><br>
+<em>Zweck:</em> Hintergrundprozesse blockieren weniger CPU.<br>
+<em>Schritte:</em>
+<ol>
+<li>Regedit öffnen</li>
+<li>Pfad: <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile</code></li>
+<li>DWord <strong>SystemResponsiveness</strong auf 10 setzen</li>
+<li>Neustart</li>
+</ol>
+</li>
+
+<li>
+<strong>Mouse Acceleration deaktivieren</strong><br>
+<em>Zweck:</em> Präzisere Mausbewegungen in Shootern.<br>
+<em>Schritte:</em>
+<ol>
+<li>Regedit öffnen</li>
+<li>Pfad: <code>HKEY_CURRENT_USER\Control Panel\Mouse</code></li>
+<li>Werte <strong>MouseSpeed</strong = 0, <strong>MouseThreshold1</strong = 0, <strong>MouseThreshold2</strong = 0 setzen</li>
+<li>Abmelden / Neustart</li>
+</ol>
+</li>
 </ul>
 </section>
 
@@ -61,13 +123,20 @@ Ergebnis: stabilere Verbindung, weniger Mikroruckler in Online-Spielen.
 Windows aktiviert standardmäßig Game DVR und Xbox-Services, die FPS kosten können.
 </p>
 <ul>
-<li>Game DVR deaktivieren</li>
-<li>Xbox Game Bar deaktivieren</li>
-<li>Hintergrunddienste für Gaming pausieren</li>
+<li>
+<strong>Game DVR deaktivieren</strong><br>
+<em>Pfad:</em> <code>HKEY_CURRENT_USER\System\GameConfigStore</code><br>
+<Wert>DWORD <strong>GameDVR_Enabled</strong> auf 0</li>
+<li>
+<strong>Xbox Game Bar deaktivieren</strong><br>
+<em>Pfad:</em> <code>HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\GameDVR</code><br>
+<Wert>DWORD <strong>AppCaptureEnabled</strong> auf 0</li>
+<li>
+<strong>Hintergrunddienste pausieren</strong><br>
+Empfehlung: Dienste wie Xbox Networking, Cortana bei Spielen deaktivieren über <em>services.msc</em>
+</li>
 </ul>
-<p>
-Diese Tweaks wirken sich besonders auf ältere oder mittelstarke Systeme positiv aus.
-</p>
+<p>Diese Tweaks wirken sich besonders auf ältere oder mittelstarke Systeme positiv aus.</p>
 </section>
 
 <section>
